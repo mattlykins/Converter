@@ -2,6 +2,7 @@ package com.mattlykins.converter;
 
 import java.io.IOException;
 
+import com.mattlykins.converter.dbContract.dBase;
 import com.mattlykins.dblibrary.DatabaseHelper;
 
 import android.os.Bundle;
@@ -17,8 +18,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        
+
         DatabaseHelper myDbHelper = new DatabaseHelper(this);
         myDbHelper = new DatabaseHelper(this);
 
@@ -35,32 +35,40 @@ public class MainActivity extends Activity {
 
         myDbHelper.openDataBase();
 
-        Cursor c = myDbHelper.getAllRows();
+        Cursor c = myDbHelper.getAllRows(dBase.TN_UNITS);
 
-        // Set up alert dialog for all three cases (Verified, UnMatched, and
-        // WrongValue)
-        AlertDialog.Builder adb = new AlertDialog.Builder(this);
-        adb.setCancelable(false);
-        adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // here you can add functions
-                dialog.cancel();
-            }
-        });
-
-        adb.setTitle("TABLE UNITS");
         String adMessage = "";
-        
+
         c.moveToFirst();
-        while (c.isAfterLast() == false) 
-        {
-            adMessage = adMessage + c.getString(1) + "\n";
+        while (c.isAfterLast() == false) {
+            adMessage = adMessage + c.getString(dBase.NDEX_UNITS_SYMBOL) + CONSTANT.SPACE
+                    + c.getString(dBase.NDEX_UNITS_NAME) + CONSTANT.SPACE
+                    + c.getString(dBase.NDEX_UNITS_TYPE) + "\n";
             c.moveToNext();
         }
-        
-        adb.setMessage(adMessage);
-        AlertDialog ad = adb.create();
-        ad.show();
+
+        c.close();
+
+        PopUp p = new PopUp(this, "Database Values", adMessage);
+
+        c = myDbHelper.getAllRows(dBase.TN_CONVS);
+
+        adMessage = "";
+
+        c.moveToFirst();
+        while (c.isAfterLast() == false) {
+            adMessage = adMessage + c.getString(dBase.NDEX_CONVS_FROMID) + CONSTANT.SPACE
+                    + c.getString(dBase.NDEX_CONVS_TOID) + CONSTANT.SPACE
+                    + c.getString(dBase.NDEX_CONVS_MUTLI) + CONSTANT.SPACE
+                    + c.getString(dBase.NDEX_CONVS_OFFSET) + CONSTANT.SPACE
+                    + c.getString(dBase.NDEX_CONVS_SPECIAL) + "\n";
+            c.moveToNext();
+        }
+
+        c.close();
+
+        p = new PopUp(this, "Database Values", adMessage);
+
     }
 
     @Override
