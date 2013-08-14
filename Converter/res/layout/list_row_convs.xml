@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_selector"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/tvListFrom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/from"
+        android:textColor="#0000FF"
+        android:textStyle="bold"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/tvListTo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/to"
+        android:textColor="#5C002E"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/tvListMultiplyBy"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/multiplyby"
+        android:textColor="#5C002E"
+        android:layout_weight="2" />
+
+    <TextView
+        android:id="@+id/tvListOffset"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/offset"
+        android:textColor="#5C002E"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/tvListSpecial"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/special"
+        android:textColor="#5C002E"
+        android:layout_weight="1" />
+
+    <!-- Rightend Arrow -->
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="1dp"
+        android:src="@drawable/arrow" />
+
+</LinearLayout>

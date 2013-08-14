@@ -4,5 +4,13 @@
     <string name="app_name">Converter</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="from">FROM</string>
+    <string name="to">TO</string>
+    <string name="multiplyby">MULTIPLYBY</string>
+    <string name="offset">OFFSET</string>
+    <string name="special">SPECIAL</string>
+    <string name="type">TYPE</string>
+    <string name="name">NAME</string>
+    <string name="symbol">SYMBOL</string>
 
 </resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_selector"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/tvListSymbol"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:padding="10dp"
+        android:layout_weight="1"
+        android:text="@string/symbol"
+        android:textColor="#0000FF"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvListName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="10dp"
+        android:text="@string/name"
+        android:textColor="#5C002E" />
+
+    <TextView
+        android:id="@+id/tvListType"
+        android:layout_width="0dp"
+        android:padding="10dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/type"
+        android:textColor="#5C002E"
+        android:layout_marginRight="10dp" />
+
+    <!-- Rightend Arrow -->
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="1dp"
+        android:contentDescription=""
+        android:src="@drawable/arrow" />
+
+</LinearLayout>
