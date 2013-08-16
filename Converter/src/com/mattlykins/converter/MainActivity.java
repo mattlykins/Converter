@@ -20,8 +20,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         DatabaseHelper myDbHelper = new DatabaseHelper(this);
-        myDbHelper = new DatabaseHelper(this);
-
+        
         try {
 
             myDbHelper.createDataBase();
