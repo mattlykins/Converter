@@ -38,12 +38,11 @@ public final class dbContract {
         // Column name arrays for the adapter and listview
         final static String[] COLUMNS_UNITS = new String[] { CN_UNITS_SYMBOL, CN_UNITS_NAME,
                 CN_UNITS_TYPE };
-        final static String[] COLUMNS_CONVS = new String[] { CN_UNITS_SYMBOL, CN_UNITS_SYMBOL,
-            CN_CONVS_MULTI};
 
         // View ids arrays for the adapter and listview
         final static int[] VIEW_IDS_UNITS = new int[] { R.id.tvListSymbol, R.id.tvListName,
-                R.id.tvListType };        
+                R.id.tvListType };  
+        
         final static int[] VIEW_IDS_CONVS = new int[] { R.id.tvListFrom, R.id.tvListTo,
             R.id.tvListMultiplyBy};
         
