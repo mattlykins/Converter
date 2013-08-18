@@ -38,14 +38,21 @@ public final class dbContract {
         // Column name arrays for the adapter and listview
         final static String[] COLUMNS_UNITS = new String[] { CN_UNITS_SYMBOL, CN_UNITS_NAME,
                 CN_UNITS_TYPE };
-        final static String[] COLUMNS_CONVS = new String[] { CN_CONVS_FROMID, CN_CONVS_TOID,
-                CN_CONVS_MULTI, CN_CONVS_OFFSET, CN_CONVS_SPECIAL };
+        final static String[] COLUMNS_CONVS = new String[] { CN_UNITS_SYMBOL, CN_UNITS_SYMBOL,
+            CN_CONVS_MULTI};
 
         // View ids arrays for the adapter and listview
         final static int[] VIEW_IDS_UNITS = new int[] { R.id.tvListSymbol, R.id.tvListName,
                 R.id.tvListType };        
         final static int[] VIEW_IDS_CONVS = new int[] { R.id.tvListFrom, R.id.tvListTo,
-            R.id.tvListMultiplyBy, R.id.tvListOffset, R.id.tvListSpecial};
+            R.id.tvListMultiplyBy};
+        
+        
+        final static String QUERYCONVS = "SELECT C._ID AS _id, U1.SYMBOL, U2.SYMBOL, C.MULTI FROM CONVS C " +
+        		"LEFT JOIN UNITS U1 ON U1._ID=C.FROMID " +
+        		"LEFT JOIN UNITS U2 ON U2._ID=C.TOID";
+        
+        final static String QUERYTEST = "SELECT _ID, FROMID FROM CONVS";
 
     }
 }

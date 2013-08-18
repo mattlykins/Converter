@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -44,15 +45,17 @@ public class ViewDB extends Activity implements OnItemClickListener {
         }
         mydbHelper.openDataBase();
 
-        String tableName = dBase.TN_CONVS; // Get this from the intent
+        String tableName = dBase.TN_UNITS; // Get this from the intent
         
-        Cursor cursor = mydbHelper.getAllRows(tableName);
-
+       // Cursor cursor = mydbHelper.getAllRows(tableName);
+       Cursor cursor = mydbHelper.sqlQuery(dBase.QUERYCONVS);
+        
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.list_row_convs, cursor,
                 dBase.COLUMNS_CONVS, dBase.VIEW_IDS_CONVS, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         list.setAdapter(adapter);
+        
 
-        list.setOnItemClickListener(this);
+       list.setOnItemClickListener(this);
     }
 
     @Override
