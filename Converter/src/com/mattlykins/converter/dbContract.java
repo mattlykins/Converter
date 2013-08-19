@@ -17,6 +17,9 @@ public final class dbContract {
         public static final String CN_UNITS_NAME = "NAME";
         public static final String CN_UNITS_TYPE = "TYPE";
 
+        public static final String[] CN_UNITS = new String[] { CN_UNITS_SYMBOL, CN_UNITS_NAME,
+                CN_UNITS_TYPE };
+
         public static final int NDEX_UNITS_SYMBOL = 1;
         public static final int NDEX_UNITS_NAME = 2;
         public static final int NDEX_UNITS_TYPE = 3;
@@ -36,22 +39,20 @@ public final class dbContract {
         public static final int NDEX_CONVS_SPECIAL = 5;
 
         // Column name arrays for the adapter and listview
-        final static String[] COLUMNS_UNITS = new String[] { CN_UNITS_SYMBOL, CN_UNITS_NAME,
+        public final static String[] COLUMNS_UNITS = new String[] { CN_UNITS_SYMBOL, CN_UNITS_NAME,
                 CN_UNITS_TYPE };
 
         // View ids arrays for the adapter and listview
-        final static int[] VIEW_IDS_UNITS = new int[] { R.id.tvListSymbol, R.id.tvListName,
-                R.id.tvListType };  
-        
-        final static int[] VIEW_IDS_CONVS = new int[] { R.id.tvListFrom, R.id.tvListTo,
-            R.id.tvListMultiplyBy};
-        
-        
-        final static String QUERYCONVS = "SELECT C._ID AS _id, U1.SYMBOL, U2.SYMBOL, C.MULTI FROM CONVS C " +
-        		"LEFT JOIN UNITS U1 ON U1._ID=C.FROMID " +
-        		"LEFT JOIN UNITS U2 ON U2._ID=C.TOID";
-        
-        final static String QUERYTEST = "SELECT _ID, FROMID FROM CONVS";
+        public final static int[] VIEW_IDS_UNITS = new int[] { R.id.tvListSymbol, R.id.tvListName,
+                R.id.tvListType };
+
+        public final static int[] VIEW_IDS_CONVS = new int[] { R.id.tvListFrom, R.id.tvListTo,
+                R.id.tvListMultiplyBy };
+
+        public final static String QUERYCONVS = "SELECT C._ID AS _id, U1.SYMBOL, U2.SYMBOL, C.MULTI FROM CONVS C "
+                + "LEFT JOIN UNITS U1 ON U1._ID=C.FROMID " + "LEFT JOIN UNITS U2 ON U2._ID=C.TOID";
+
+        public final static String QUERYTEST = "SELECT _ID, FROMID FROM CONVS";
 
     }
 }

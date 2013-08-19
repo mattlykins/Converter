@@ -18,6 +18,7 @@
             android:id="@+id/etEditUnitsSymbol"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:hint="Enter Symbol"
             android:layout_weight="2"
             android:ems="10" />
     </TableRow>
@@ -38,6 +39,7 @@
             android:id="@+id/etEditUnitsName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:hint="Enter Name"
             android:layout_weight="2"
             android:ems="10" />
     </TableRow>
@@ -58,6 +60,7 @@
             android:id="@+id/etEditUnitsType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:hint="Enter Type"
             android:layout_weight="2"
             android:ems="10" />
     </TableRow>
