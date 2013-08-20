@@ -1,6 +1,9 @@
 package com.mattlykins.converter;
 
+import java.io.IOException;
+
 import com.mattlykins.converter.dbContract.dBase;
+import com.mattlykins.dblibrary.DatabaseHelper;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,16 +11,32 @@ import android.database.Cursor;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
 
 public class EditUnitsDialog extends Dialog implements android.view.View.OnClickListener {
 
     final EditText etEditUnitsSymbol, etEditUnitsName, etEditUnitsType;
     Button bEditUnitsOK, bEditUnitsCancel, bEditUnitsDelete;
+    final int index;
+    DatabaseHelper dbHelper;
+    SimpleCursorAdapter scAdapter;
 
-    public EditUnitsDialog(Context context, int ViewId, String title, Cursor c) {
+    public EditUnitsDialog(Context context, int ViewId, String title, Cursor c, SimpleCursorAdapter adapter) {
         super(context);
         this.setContentView(ViewId);
-        this.setTitle(title);
+        this.setTitle(title);  
+        
+        scAdapter = adapter;
+        
+        dbHelper = new DatabaseHelper(context);
+        try {
+            dbHelper.createDataBase();
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        dbHelper.openDataBase();
 
         etEditUnitsSymbol = (EditText) this.findViewById(R.id.etEditUnitsSymbol);
         etEditUnitsName = (EditText) this.findViewById(R.id.etEditUnitsName);
@@ -31,7 +50,7 @@ public class EditUnitsDialog extends Dialog implements android.view.View.OnClick
         bEditUnitsCancel.setOnClickListener(this);
         bEditUnitsDelete.setOnClickListener(this);
 
-        final int index = c.getInt(dBase.NDEX_ID);
+        index = c.getInt(dBase.NDEX_ID);
 
         etEditUnitsSymbol.setText(c.getString(dBase.NDEX_UNITS_SYMBOL));
         etEditUnitsName.setText(c.getString(dBase.NDEX_UNITS_NAME));
@@ -51,16 +70,21 @@ public class EditUnitsDialog extends Dialog implements android.view.View.OnClick
 
                 String[] colData = new String[] { tempEtSymbol, tempEtName, tempEtType };
 
-                mydbHelper.Update_ByID(dBase.TN_UNITS, index, dBase.CN_UNITS, colData);
-
-                scAdapter.changeCursor(mydbHelper.getAllRows(dBase.TN_UNITS));
-                d.dismiss();
+                
+                dbHelper.Update_ByID(dBase.TN_UNITS, index, dBase.CN_UNITS, colData);
+                
+                scAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_UNITS));
+                this.dismiss();
                 break;
 
             case R.id.bEditUnitsCancel:
+                this.dismiss();
                 break;
 
             case R.id.bEditUnitsDelete:
+                dbHelper.Delete_ByID(dBase.TN_UNITS, index);
+                scAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_UNITS));
+                this.dismiss();
                 break;
         }
 

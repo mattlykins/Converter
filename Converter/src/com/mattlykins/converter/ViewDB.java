@@ -86,7 +86,7 @@ public class ViewDB extends Activity implements OnItemClickListener {
     /**
      * Method uses the DatabaseHelper class to create, if necessary, and open the database
      */
-    private void openDatabase() {
+    public void openDatabase() {
         mydbHelper = new DatabaseHelper(this);
         try {
             mydbHelper.createDataBase();
@@ -101,66 +101,7 @@ public class ViewDB extends Activity implements OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         Cursor c = (Cursor) arg0.getItemAtPosition(arg2);
-
-        final int index = c.getInt(dBase.NDEX_ID);
-        final String tempDbSymbol = c.getString(dBase.NDEX_UNITS_SYMBOL);
-        final String tempDbName = c.getString(dBase.NDEX_UNITS_NAME);
-        final String tempDbType = c.getString(dBase.NDEX_UNITS_TYPE);
-
-        Log.d("FERRET", tempDbSymbol + " " + tempDbName + " " + tempDbType + "\n");
-
-        final Dialog d = new Dialog(arg0.getContext());
-        d.setContentView(R.layout.edit_units);
-        d.setTitle("Edit Unit");
-
-        final EditText etEditUnitsSymbol = (EditText) d.findViewById(R.id.etEditUnitsSymbol);
-        final EditText etEditUnitsName = (EditText) d.findViewById(R.id.etEditUnitsName);
-        final EditText etEditUnitsType = (EditText) d.findViewById(R.id.etEditUnitsType);
-        
-        etEditUnitsSymbol.setText(tempDbSymbol);
-        etEditUnitsName.setText(tempDbName);
-        etEditUnitsType.setText(tempDbType);
-
-        Button bEditUnitsOK = (Button) d.findViewById(R.id.bEditUnitsOK);
-        Button bEditUnitsCancel = (Button) d.findViewById(R.id.bEditUnitsCancel);
-        Button bEditUnitsDelete = (Button) d.findViewById(R.id.bEditUnitsDelete);
-
-        bEditUnitsOK.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // Find which ID this is and update its values
-
-                final String tempEtSymbol = etEditUnitsSymbol.getText().toString();
-                final String tempEtName = etEditUnitsName.getText().toString();
-                final String tempEtType = etEditUnitsType.getText().toString();
-
-                String[] colData = new String[] { tempEtSymbol, tempEtName, tempEtType };
-
-                mydbHelper.Update_ByID(dBase.TN_UNITS, index, dBase.CN_UNITS, colData);
-
-                scAdapter.changeCursor(mydbHelper.getAllRows(dBase.TN_UNITS));
-                d.dismiss();
-            }
-        });
-        bEditUnitsCancel.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
-            }
-        });
-        bEditUnitsDelete.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                mydbHelper.Delete_ByID(dBase.TN_UNITS, index);
-                
-                scAdapter.changeCursor(mydbHelper.getAllRows(dBase.TN_UNITS));
-                d.dismiss();
-            }
-        });
-        
-        d.show();
+        EditUnitsDialog eud = new EditUnitsDialog(context, R.layout.edit_units, "Edit Units", c, scAdapter);
+        eud.show();        
     }
 }
