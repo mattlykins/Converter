@@ -8,6 +8,8 @@ import com.mattlykins.dblibrary.DatabaseHelper;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -84,9 +86,32 @@ public class MainActivity extends Activity {
         switch (item.getItemId())
         {
             case R.id.menu_view_db:
-                Intent intent = new Intent(this,ViewDB.class);
-                intent.putExtra(CONSTANT.WHICH_TABLE, dBase.TN_UNITS);
-                startActivity(intent);
+                final Intent intent = new Intent(this,ViewDB.class);
+                
+                AlertDialog.Builder b = new AlertDialog.Builder(this);
+                b.setTitle("Example");
+                final CharSequence[] types = {"UNITS", "CONVS"};
+                b.setItems(types, new DialogInterface.OnClickListener() 
+                {
+                    
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) 
+                    {
+                        switch(which)
+                        {
+                        case 0:
+                            intent.putExtra(CONSTANT.WHICH_TABLE, dBase.TN_UNITS);
+                            startActivity(intent);
+                            break;
+                        case 1:
+                            intent.putExtra(CONSTANT.WHICH_TABLE, dBase.TN_CONVS);
+                            startActivity(intent);
+                            break;
+                        
+                        }
+                    }
+                });
+                b.show(); 
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -37,6 +37,15 @@ public class ViewDB extends Activity implements OnItemClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getWhichTable(savedInstanceState);
+
+        setContentView(R.layout.activity_view_db);
+        context = this;
+        list = (ListView) findViewById(R.id.list);
+
+    }
+
+    private void getWhichTable(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if (extras == null) {
@@ -47,14 +56,9 @@ public class ViewDB extends Activity implements OnItemClickListener {
                 whichTable = extras.getString(CONSTANT.WHICH_TABLE);
             }
         }
-        else{
+        else {
             whichTable = (String) savedInstanceState.getSerializable(CONSTANT.WHICH_TABLE);
         }
-
-        setContentView(R.layout.activity_view_db);
-        context = this;
-        list = (ListView) findViewById(R.id.list);
-
     }
 
     @Override
@@ -63,7 +67,7 @@ public class ViewDB extends Activity implements OnItemClickListener {
         super.onResume();
 
         openDatabase();
-        
+
         Cursor cursor = null;
 
         if (whichTable.equals(dBase.TN_UNITS)) {
@@ -116,8 +120,16 @@ public class ViewDB extends Activity implements OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         Cursor c = (Cursor) arg0.getItemAtPosition(arg2);
-        EditUnitsDialog eud = new EditUnitsDialog(context, R.layout.edit_units, "Edit Units", c,
-                scAdapter);
-        eud.show();
+
+        if (whichTable.equals(dBase.TN_UNITS)) {
+            EditUnitsDialog eud = new EditUnitsDialog(context, R.layout.edit_units, "Edit Units",
+                    c, scAdapter);
+            eud.show();
+        }
+        //else{
+        //    EditUnitsDialog ecd = new EditConvsDialog(context, R.layout.edit_convs, "Edit Conversion",
+        //            c, ccAdapter);
+       // }
+        
     }
 }

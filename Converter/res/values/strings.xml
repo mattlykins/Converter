@@ -12,5 +12,11 @@
     <string name="type">TYPE</string>
     <string name="name">NAME</string>
     <string name="symbol">SYMBOL</string>
+    <string name="string_whichtable">Which table would you like to view?</string>
+    
+    <string-array name="saWhichTable">
+        <item >dBase.TN_UNITS</item>
+        <item >dBase.TN_CONVS</item>
+    </string-array>
 
 </resources>
