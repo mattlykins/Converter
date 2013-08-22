@@ -22,7 +22,7 @@ import android.widget.SimpleCursorAdapter;
 
 /**
  * Class handles the display of the unit and conversion data
- *  
+ * 
  */
 public class ViewDB extends Activity implements OnItemClickListener {
 
@@ -31,11 +31,26 @@ public class ViewDB extends Activity implements OnItemClickListener {
     DatabaseHelper mydbHelper;
     CustomCursorAdapter ccAdapter;
     SimpleCursorAdapter scAdapter;
-    boolean lgUnits;
+    String whichTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras == null) {
+                @SuppressWarnings("unused")
+                PopUp p = new PopUp(this, "ERROR!!!!", "ViewDB received no bundle");
+            }
+            else {
+                whichTable = extras.getString(CONSTANT.WHICH_TABLE);
+            }
+        }
+        else{
+            whichTable = (String) savedInstanceState.getSerializable(CONSTANT.WHICH_TABLE);
+        }
+
         setContentView(R.layout.activity_view_db);
         context = this;
         list = (ListView) findViewById(R.id.list);
@@ -48,13 +63,12 @@ public class ViewDB extends Activity implements OnItemClickListener {
         super.onResume();
 
         openDatabase();
-
-        lgUnits = true;
+        
         Cursor cursor = null;
 
-        if (lgUnits) {
+        if (whichTable.equals(dBase.TN_UNITS)) {
 
-            String tableName = dBase.TN_UNITS; // Get this from the intent
+            String tableName = whichTable; // Get this from the intent
             cursor = mydbHelper.getAllRows(tableName);
 
             scAdapter = new SimpleCursorAdapter(this, R.layout.list_row_units, cursor,
@@ -84,7 +98,8 @@ public class ViewDB extends Activity implements OnItemClickListener {
     }
 
     /**
-     * Method uses the DatabaseHelper class to create, if necessary, and open the database
+     * Method uses the DatabaseHelper class to create, if necessary, and open
+     * the database
      */
     public void openDatabase() {
         mydbHelper = new DatabaseHelper(this);
@@ -101,7 +116,8 @@ public class ViewDB extends Activity implements OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         Cursor c = (Cursor) arg0.getItemAtPosition(arg2);
-        EditUnitsDialog eud = new EditUnitsDialog(context, R.layout.edit_units, "Edit Units", c, scAdapter);
-        eud.show();        
+        EditUnitsDialog eud = new EditUnitsDialog(context, R.layout.edit_units, "Edit Units", c,
+                scAdapter);
+        eud.show();
     }
 }

@@ -15,6 +15,8 @@ import android.widget.SimpleCursorAdapter;
 
 public class EditUnitsDialog extends Dialog implements android.view.View.OnClickListener {
 
+    //Handle when user try to set two unique columns with the same values
+    
     final EditText etEditUnitsSymbol, etEditUnitsName, etEditUnitsType;
     Button bEditUnitsOK, bEditUnitsCancel, bEditUnitsDelete;
     final int index;
