@@ -7,16 +7,11 @@ import com.mattlykins.dblibrary.DatabaseHelper;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -126,10 +121,11 @@ public class ViewDB extends Activity implements OnItemClickListener {
                     c, scAdapter);
             eud.show();
         }
-        //else{
-        //    EditUnitsDialog ecd = new EditConvsDialog(context, R.layout.edit_convs, "Edit Conversion",
-        //            c, ccAdapter);
-       // }
+        else{
+            EditConvsDialog ecd = new EditConvsDialog(context, R.layout.edit_convs, "Edit Conversion",
+                    c, ccAdapter);
+            ecd.show();
+        }
         
     }
 }
