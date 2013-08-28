@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -64,10 +65,10 @@ public class ViewDB extends Activity implements OnItemClickListener {
         openDatabase();
 
         Cursor cursor = null;
+        String tableName = whichTable; // Get this from the intent
 
         if (whichTable.equals(dBase.TN_UNITS)) {
-
-            String tableName = whichTable; // Get this from the intent
+            
             cursor = mydbHelper.getAllRows(tableName);
 
             scAdapter = new SimpleCursorAdapter(this, R.layout.list_row_units, cursor,
@@ -79,20 +80,21 @@ public class ViewDB extends Activity implements OnItemClickListener {
         }
         else {
 
-            cursor = mydbHelper.sqlQuery(dBase.QUERYCONVS);
+            //cursor = mydbHelper.sqlQuery(dBase.QUERYCONVS);
+            cursor = mydbHelper.getAllRows(tableName);
             ccAdapter = new CustomCursorAdapter(this, R.layout.list_row_convs, cursor);
             list.setAdapter(ccAdapter);
             list.setOnItemClickListener(this);
         }
 
-        // cursor.moveToFirst();
-        // while (cursor.isAfterLast() == false) {
-        // Log.d("FERRET",
-        // cursor.getString(0) + " " + cursor.getString(1) + " " +
-        // cursor.getString(2)
-        // + " " + String.valueOf(cursor.getDouble(3)) + "\n");
-        // cursor.moveToNext();
-        // }
+         cursor.moveToFirst();
+         while (cursor.isAfterLast() == false) {
+         Log.d("FERRET",
+         cursor.getString(0) + " " + cursor.getString(1) + " " +
+         cursor.getString(2)
+         + " " + String.valueOf(cursor.getDouble(3)) + "\n");
+         cursor.moveToNext();
+         }
 
     }
 
