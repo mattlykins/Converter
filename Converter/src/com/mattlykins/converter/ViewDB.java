@@ -87,14 +87,14 @@ public class ViewDB extends Activity implements OnItemClickListener {
             list.setOnItemClickListener(this);
         }
 
-         cursor.moveToFirst();
-         while (cursor.isAfterLast() == false) {
-         Log.d("FERRET",
-         cursor.getString(0) + " " + cursor.getString(1) + " " +
-         cursor.getString(2)
-         + " " + String.valueOf(cursor.getDouble(3)) + "\n");
-         cursor.moveToNext();
-         }
+//         cursor.moveToFirst();
+//         while (cursor.isAfterLast() == false) {
+//         Log.d("FERRET",
+//         cursor.getString(0) + " " + cursor.getString(1) + " " +
+//         cursor.getString(2)
+//         + " " + String.valueOf(cursor.getDouble(3)) + "\n");
+//         cursor.moveToNext();
+//         }
 
     }
 

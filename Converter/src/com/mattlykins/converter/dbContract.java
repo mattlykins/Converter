@@ -59,8 +59,8 @@ public final class dbContract {
         public final static int[] VIEW_IDS_CONVS = new int[] { R.id.tvListFrom, R.id.tvListTo,
                 R.id.tvListMultiplyBy };
 
-        public final static String QUERYCONVS = "SELECT C._ID AS _id, U1._ID, U1.SYMBOL, U2._ID, U2.SYMBOL, C.MULTI, C.OFFSET, C.SPECIAL FROM CONVS C "
-                + "LEFT JOIN UNITS U1 ON U1._ID=C.FROMID " + "LEFT JOIN UNITS U2 ON U2._ID=C.TOID";
+//        public final static String QUERYCONVS = "SELECT C._ID AS _id, U1._ID, U1.SYMBOL, U2._ID, U2.SYMBOL, C.MULTI, C.OFFSET, C.SPECIAL FROM CONVS C "
+//                + "LEFT JOIN UNITS U1 ON U1._ID=C.FROMID " + "LEFT JOIN UNITS U2 ON U2._ID=C.TOID";
         
 
         public final static String QUERYTEST = "SELECT _ID, FROMID FROM CONVS";

@@ -8,7 +8,6 @@ import com.mattlykins.dblibrary.DatabaseHelper;
 import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +20,6 @@ public class EditConvsDialog extends Dialog implements android.view.View.OnClick
             etEditConvsSpecial;
     Button bEditConvsOK, bEditConvsCancel, bEditConvsDelete;
     final int convIndex;
-    String convFrom, convTo;
     DatabaseHelper dbHelper;
     CustomCursorAdapter ccAdapter;
 
@@ -58,14 +56,12 @@ public class EditConvsDialog extends Dialog implements android.view.View.OnClick
         bEditConvsDelete.setOnClickListener(this);
 
         convIndex = c.getInt(dBase.NDEX_ID);
-        convFrom = c.getString(1);
-        convTo = c.getString(2);
 
-        etEditConvsFrom.setText(c.getString(1));
-        etEditConvsTo.setText(c.getString(2));
-        etEditConvsMultiBy.setText(c.getString(3));
-        etEditConvsOffset.setText(c.getString(4));
-        etEditConvsSpecial.setText(c.getString(5));
+        etEditConvsFrom.setText(dBase.NDEX_CONVS_FROM);
+        etEditConvsTo.setText(dBase.NDEX_CONVS_TO);
+        etEditConvsMultiBy.setText(dBase.NDEX_CONVS_MUTLI);
+        etEditConvsOffset.setText(dBase.NDEX_CONVS_OFFSET);
+        etEditConvsSpecial.setText(dBase.NDEX_CONVS_SPECIAL);
     }
 
     @Override
@@ -75,14 +71,14 @@ public class EditConvsDialog extends Dialog implements android.view.View.OnClick
 
             case R.id.bEditConvsOK:
 
-                final String[] tempEtFromSymbol = { etEditConvsFrom.getText().toString() };
-                final String[] tempEtToSymbol = { etEditConvsTo.getText().toString() };
+                final String tempEtFromSymbol = etEditConvsFrom.getText().toString();
+                final String tempEtToSymbol = etEditConvsTo.getText().toString();
                 final String tempEtMultiBy = etEditConvsMultiBy.getText().toString();
                 final String tempEtOffset = etEditConvsOffset.getText().toString();
                 final String tempEtSpecial = etEditConvsSpecial.getText().toString();
 
-                String[] colData = new String[] { convFrom, convTo, tempEtMultiBy, tempEtOffset,
-                        tempEtSpecial };
+                String[] colData = new String[] { tempEtFromSymbol, tempEtToSymbol, tempEtMultiBy,
+                        tempEtOffset, tempEtSpecial };
 
                 dbHelper.Update_ByID(dBase.TN_CONVS, convIndex, dBase.CN_CONVS, colData);
 
@@ -97,7 +93,7 @@ public class EditConvsDialog extends Dialog implements android.view.View.OnClick
 
             case R.id.bEditConvsDelete:
                 dbHelper.Delete_ByID(dBase.TN_CONVS, convIndex);
-                ccAdapter.changeCursor(dbHelper.sqlQuery(dBase.QUERYCONVS));
+                ccAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_CONVS));
                 this.dismiss();
                 break;
         }
