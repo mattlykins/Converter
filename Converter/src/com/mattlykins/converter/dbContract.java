@@ -10,6 +10,8 @@ public final class dbContract {
     public static abstract class dBase implements BaseColumns {
         // primary key is the same for all tables
         public static final int NDEX_ID = 0;
+        
+        final static CharSequence[] TN_TABLES = {"UNITS", "CONVS"};
 
         // Set up column names and index valus for UNITS Table
         public static final String TN_UNITS = "UNITS";

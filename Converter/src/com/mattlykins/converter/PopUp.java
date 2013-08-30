@@ -21,7 +21,7 @@ public class PopUp {
         adb.setTitle(title);       
         adb.setMessage(message);
         AlertDialog ad = adb.create();
-        ad.show();        
+        ad.show();
     }
 
 }

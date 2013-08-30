@@ -22,11 +22,12 @@ public class EditUnitsDialog extends Dialog implements android.view.View.OnClick
     final int index;
     DatabaseHelper dbHelper;
     SimpleCursorAdapter scAdapter;
+    String addOrEdit;
 
     public EditUnitsDialog(Context context, int ViewId, String title, Cursor c, SimpleCursorAdapter adapter) {
         super(context);
         this.setContentView(ViewId);
-        this.setTitle(title);  
+        this.setTitle(title);
         
         scAdapter = adapter;
         

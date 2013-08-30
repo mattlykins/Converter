@@ -68,7 +68,7 @@ public class ViewDB extends Activity implements OnItemClickListener {
         String tableName = whichTable; // Get this from the intent
 
         if (whichTable.equals(dBase.TN_UNITS)) {
-            
+
             cursor = mydbHelper.getAllRows(tableName);
 
             scAdapter = new SimpleCursorAdapter(this, R.layout.list_row_units, cursor,
@@ -80,21 +80,21 @@ public class ViewDB extends Activity implements OnItemClickListener {
         }
         else {
 
-            //cursor = mydbHelper.sqlQuery(dBase.QUERYCONVS);
+            // cursor = mydbHelper.sqlQuery(dBase.QUERYCONVS);
             cursor = mydbHelper.getAllRows(tableName);
             ccAdapter = new CustomCursorAdapter(this, R.layout.list_row_convs, cursor);
             list.setAdapter(ccAdapter);
             list.setOnItemClickListener(this);
         }
 
-//         cursor.moveToFirst();
-//         while (cursor.isAfterLast() == false) {
-//         Log.d("FERRET",
-//         cursor.getString(0) + " " + cursor.getString(1) + " " +
-//         cursor.getString(2)
-//         + " " + String.valueOf(cursor.getDouble(3)) + "\n");
-//         cursor.moveToNext();
-//         }
+        // cursor.moveToFirst();
+        // while (cursor.isAfterLast() == false) {
+        // Log.d("FERRET",
+        // cursor.getString(0) + " " + cursor.getString(1) + " " +
+        // cursor.getString(2)
+        // + " " + String.valueOf(cursor.getDouble(3)) + "\n");
+        // cursor.moveToNext();
+        // }
 
     }
 
@@ -119,15 +119,15 @@ public class ViewDB extends Activity implements OnItemClickListener {
         Cursor c = (Cursor) arg0.getItemAtPosition(arg2);
 
         if (whichTable.equals(dBase.TN_UNITS)) {
-            EditUnitsDialog eud = new EditUnitsDialog(context, R.layout.edit_units, "Edit Units",
-                    c, scAdapter);
+            EditUnitsDialog eud = new EditUnitsDialog(context, R.layout.edit_units, CONSTANT.EDIT
+                    + " " + dBase.TN_UNITS, c, scAdapter);
             eud.show();
         }
-        else{
-            EditConvsDialog ecd = new EditConvsDialog(context, R.layout.edit_convs, "Edit Conversion",
-                    c, ccAdapter);
+        else {
+            EditConvsDialog ecd = new EditConvsDialog(context, R.layout.edit_convs,
+                    "Edit Conversion", c, ccAdapter);
             ecd.show();
         }
-        
+
     }
 }
