@@ -12,6 +12,7 @@ public final class dbContract {
         public static final int NDEX_ID = 0;
         
         final static CharSequence[] TN_TABLES = {"UNITS", "CONVS"};
+        final static String[] TN_TABLES_STRING = {"UNITS", "CONVS"};
 
         // Set up column names and index valus for UNITS Table
         public static final String TN_UNITS = "UNITS";

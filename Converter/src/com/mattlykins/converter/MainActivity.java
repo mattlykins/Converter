@@ -31,9 +31,9 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_view_db:
-                chooseTableDialog(CONSTANT.EDIT);
+                //chooseTableDialog(CONSTANT.EDIT);
                 final Intent intent = new Intent(this, ViewDB.class);
-                intent.putExtra(CONSTANT.WHICH_TABLE, chosenTable);
+               // intent.putExtra(CONSTANT.WHICH_TABLE, chosenTable);
                 startActivity(intent);
                 break;
 

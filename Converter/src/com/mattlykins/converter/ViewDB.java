@@ -13,8 +13,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 
 /**
  * Class handles the display of the unit and conversion data
@@ -28,63 +31,123 @@ public class ViewDB extends Activity implements OnItemClickListener {
     CustomCursorAdapter ccAdapter;
     SimpleCursorAdapter scAdapter;
     String whichTable;
+    Spinner spinTable;
+    Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWhichTable(savedInstanceState);
-
         setContentView(R.layout.activity_view_db);
         context = this;
         list = (ListView) findViewById(R.id.list);
+        
+        spinTable = (Spinner)findViewById(R.id.spinTable);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,dBase.TN_TABLES_STRING);
+        spinTable.setAdapter(spinnerAdapter);
+        
+        spinTable.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                whichTable = spinTable.getItemAtPosition(arg2).toString();
+                
+                if( whichTable.equals(dBase.TN_UNITS))
+                {
+                    unitsSelected();
+                    //scAdapter.changeCursor(mydbHelper.getAllRows(dBase.TN_UNITS));
+                }
+                else if( whichTable.equals(dBase.TN_CONVS))
+                {
+                    convsSelected();
+                    //ccAdapter.changeCursor(mydbHelper.getAllRows(dBase.TN_CONVS));
+                }
+                
+                
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+                
+            }
+        });
+        
 
     }
 
-    private void getWhichTable(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                @SuppressWarnings("unused")
-                PopUp p = new PopUp(this, "ERROR!!!!", "ViewDB received no bundle");
-            }
-            else {
-                whichTable = extras.getString(CONSTANT.WHICH_TABLE);
-            }
-        }
-        else {
-            whichTable = (String) savedInstanceState.getSerializable(CONSTANT.WHICH_TABLE);
-        }
-    }
+//    private void getWhichTable(Bundle savedInstanceState) {
+//        if (savedInstanceState == null) {
+//            Bundle extras = getIntent().getExtras();
+//            if (extras == null) {
+//                @SuppressWarnings("unused")
+//                PopUp p = new PopUp(this, "ERROR!!!!", "ViewDB received no bundle");
+//            }
+//            else {
+//                whichTable = extras.getString(CONSTANT.WHICH_TABLE);
+//            }
+//        }
+//        else {
+//            whichTable = (String) savedInstanceState.getSerializable(CONSTANT.WHICH_TABLE);
+//        }
+//    }
 
+    private void unitsSelected(){
+        cursor = mydbHelper.getAllRows(whichTable);
+
+        scAdapter = new SimpleCursorAdapter(this, R.layout.list_row_units, cursor,
+                dBase.COLUMNS_UNITS, dBase.VIEW_IDS_UNITS,
+                SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+
+        list.setAdapter(scAdapter);
+        list.setOnItemClickListener(this);
+    }
+    
+    private void convsSelected(){
+        cursor = mydbHelper.getAllRows(whichTable);
+        ccAdapter = new CustomCursorAdapter(this, R.layout.list_row_convs, cursor);
+        list.setAdapter(ccAdapter);
+//        list.setOnItemClickListener(new OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+//                Cursor c = (Cursor) arg0.getItemAtPosition(arg2);
+//                EditConvsDialog ecd = new EditConvsDialog(context, R.layout.edit_convs,
+//                        "Edit Conversion", c, ccAdapter);
+//                ecd.show();                
+//            }
+//        });
+    }
+    
     @Override
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
 
         openDatabase();
+        
+        whichTable = dBase.TN_UNITS;
 
-        Cursor cursor = null;
-        String tableName = whichTable; // Get this from the intent
+        //Cursor cursor = null;
 
         if (whichTable.equals(dBase.TN_UNITS)) {
 
-            cursor = mydbHelper.getAllRows(tableName);
-
-            scAdapter = new SimpleCursorAdapter(this, R.layout.list_row_units, cursor,
-                    dBase.COLUMNS_UNITS, dBase.VIEW_IDS_UNITS,
-                    SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-
-            list.setAdapter(scAdapter);
-            list.setOnItemClickListener(this);
+//            cursor = mydbHelper.getAllRows(whichTable);
+//
+//            scAdapter = new SimpleCursorAdapter(this, R.layout.list_row_units, cursor,
+//                    dBase.COLUMNS_UNITS, dBase.VIEW_IDS_UNITS,
+//                    SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+//
+//            list.setAdapter(scAdapter);
+//            list.setOnItemClickListener(this);
         }
         else {
 
             // cursor = mydbHelper.sqlQuery(dBase.QUERYCONVS);
-            cursor = mydbHelper.getAllRows(tableName);
-            ccAdapter = new CustomCursorAdapter(this, R.layout.list_row_convs, cursor);
-            list.setAdapter(ccAdapter);
-            list.setOnItemClickListener(this);
+//            cursor = mydbHelper.getAllRows(whichTable);
+//            ccAdapter = new CustomCursorAdapter(this, R.layout.list_row_convs, cursor);
+//            list.setAdapter(ccAdapter);
+//            list.setOnItemClickListener(this);
         }
 
         // cursor.moveToFirst();
