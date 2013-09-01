@@ -57,11 +57,11 @@ public class EditConvsDialog extends Dialog implements android.view.View.OnClick
 
         convIndex = c.getInt(dBase.NDEX_ID);
 
-        etEditConvsFrom.setText(dBase.NDEX_CONVS_FROM);
-        etEditConvsTo.setText(dBase.NDEX_CONVS_TO);
-        etEditConvsMultiBy.setText(dBase.NDEX_CONVS_MUTLI);
-        etEditConvsOffset.setText(dBase.NDEX_CONVS_OFFSET);
-        etEditConvsSpecial.setText(dBase.NDEX_CONVS_SPECIAL);
+        etEditConvsFrom.setText(c.getString(dBase.NDEX_CONVS_FROM));
+        etEditConvsTo.setText(c.getString(dBase.NDEX_CONVS_TO));
+        etEditConvsMultiBy.setText(c.getString(dBase.NDEX_CONVS_MUTLI));
+        etEditConvsOffset.setText(c.getString(dBase.NDEX_CONVS_OFFSET));
+        etEditConvsSpecial.setText(c.getString(dBase.NDEX_CONVS_SPECIAL));
     }
 
     @Override
