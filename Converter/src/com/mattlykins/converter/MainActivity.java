@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
                 break;
 
             case R.id.menu_add_db:
-                chooseTableDialog(CONSTANT.ADD);
+                //chooseTableDialog(CONSTANT.ADD);
                 AddUnitsDialog aud = new AddUnitsDialog(this, R.layout.edit_units, "Add Units");
                 aud.show();
                 break;

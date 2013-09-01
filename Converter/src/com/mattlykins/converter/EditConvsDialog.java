@@ -8,6 +8,7 @@ import com.mattlykins.dblibrary.DatabaseHelper;
 import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -80,7 +81,13 @@ public class EditConvsDialog extends Dialog implements android.view.View.OnClick
                 String[] colData = new String[] { tempEtFromSymbol, tempEtToSymbol, tempEtMultiBy,
                         tempEtOffset, tempEtSpecial };
 
-                dbHelper.Update_ByID(dBase.TN_CONVS, convIndex, dBase.CN_CONVS, colData);
+                try {
+                    dbHelper.Update_ByID(dBase.TN_CONVS, convIndex, dBase.CN_CONVS, colData);
+                }
+                catch (SQLException sqlex) {
+                    // TODO Auto-generated catch block
+                    sqlex.printStackTrace();
+                }
 
                 ccAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_CONVS));
 
@@ -92,7 +99,13 @@ public class EditConvsDialog extends Dialog implements android.view.View.OnClick
                 break;
 
             case R.id.bEditConvsDelete:
-                dbHelper.Delete_ByID(dBase.TN_CONVS, convIndex);
+                try {
+                    dbHelper.Delete_ByID(dBase.TN_CONVS, convIndex);
+                }
+                catch (SQLException sqlex) {
+                    // TODO Auto-generated catch block
+                    sqlex.printStackTrace();
+                }
                 ccAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_CONVS));
                 this.dismiss();
                 break;

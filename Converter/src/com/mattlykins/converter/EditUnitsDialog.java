@@ -8,6 +8,7 @@ import com.mattlykins.dblibrary.DatabaseHelper;
 import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -73,7 +74,13 @@ public class EditUnitsDialog extends Dialog implements android.view.View.OnClick
                 String[] colData = new String[] { tempEtSymbol, tempEtName, tempEtType };
 
                 
-                dbHelper.Update_ByID(dBase.TN_UNITS, index, dBase.CN_UNITS, colData);
+                try {
+                    dbHelper.Update_ByID(dBase.TN_UNITS, index, dBase.CN_UNITS, colData);
+                }
+                catch (SQLException sqlex) {
+                    // TODO Auto-generated catch block
+                    sqlex.printStackTrace();
+                }
                 
                 scAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_UNITS));
                 this.dismiss();
@@ -84,7 +91,14 @@ public class EditUnitsDialog extends Dialog implements android.view.View.OnClick
                 break;
 
             case R.id.bEditUnitsDelete:
-                dbHelper.Delete_ByID(dBase.TN_UNITS, index);
+                try {
+                    dbHelper.Delete_ByID(dBase.TN_UNITS, index);
+                }
+                catch (SQLException sqlex) {
+                    // TODO Auto-generated catch block
+                    sqlex.printStackTrace();
+                }
+                
                 scAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_UNITS));
                 this.dismiss();
                 break;
