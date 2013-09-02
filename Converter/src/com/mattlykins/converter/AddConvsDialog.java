@@ -7,7 +7,9 @@ import com.mattlykins.dblibrary.DatabaseHelper;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
+import android.text.format.Formatter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,12 +52,14 @@ public class AddConvsDialog extends Dialog implements android.view.View.OnClickL
         bAddConvsCancel = (Button) this.findViewById(R.id.bEditConvsCancel);
         bAddConvsDelete = (Button) this.findViewById(R.id.bEditConvsDelete);
 
-        bAddConvsDelete.setVisibility(View.INVISIBLE);
+        //bAddConvsDelete.setVisibility(View.INVISIBLE);
 
         bAddConvsOK.setText("Add");
+        bAddConvsDelete.setText("Clear");
 
         bAddConvsOK.setOnClickListener(this);
         bAddConvsCancel.setOnClickListener(this);
+        bAddConvsDelete.setOnClickListener(this);
 
     }
 
@@ -90,27 +94,70 @@ public class AddConvsDialog extends Dialog implements android.view.View.OnClickL
                     final String tempEtOffset = etEditConvsOffset.getText().toString();
                     final String tempEtSpecial = etEditConvsSpecial.getText().toString();
 
-                    String[] colData = new String[] { tempEtFromSymbol, tempEtToSymbol,
-                            tempEtMultiBy, tempEtOffset, tempEtSpecial };
+                    // test whether a conversion already exists
+                    final String selection = "FROMUNIT=? AND TOUNIT=?";
+                    Cursor c = dbHelper.Query(true, dBase.TN_CONVS, null, selection, new String[] {
+                            tempEtFromSymbol, tempEtToSymbol });
 
-                    try {
-                        dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, colData);
+                    LogCursor lc = new LogCursor();
+                    lc.LogConvs(c);
+
+                    c.moveToFirst();
+
+                    if (c.getString(dBase.NDEX_CONVS_FROM).equals(tempEtFromSymbol)
+                            && c.getString(dBase.NDEX_CONVS_TO).equals(tempEtToSymbol)) {
+
+                        final String message = String.format(
+                                "The conversion from %s to %s already exists in the database",
+                                tempEtFromSymbol, tempEtToSymbol);
+                        @SuppressWarnings("unused")
+                        PopUp P = new PopUp(myContext, "Duplicate Conversion", message);
+
                     }
-                    catch (SQLException sqlex) {
-                        Toast toast = Toast.makeText(myContext, sqlex.getMessage(),
-                                Toast.LENGTH_LONG);
-                        toast.show();
+                    else {
+
+                        String[] colData = new String[] { tempEtFromSymbol, tempEtToSymbol,
+                                tempEtMultiBy, tempEtOffset, tempEtSpecial };
+
+                        try {
+                            dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, colData);
+                        }
+                        catch (SQLException sqlex) {
+                            Toast toast = Toast.makeText(myContext, sqlex.getMessage(),
+                                    Toast.LENGTH_LONG);
+                            toast.show();
+                            break;
+                        }
+
+                        Toast t = Toast.makeText(myContext, "Conversion was added to the database",
+                                Toast.LENGTH_SHORT);
+                        t.show();
+
+                        clearEts();
 
                     }
                 }
 
-                this.dismiss();
+                // this.dismiss();
                 break;
 
             case R.id.bEditConvsCancel:
                 this.dismiss();
                 break;
+                
+            case R.id.bEditConvsDelete:
+                clearEts();
+                break;
         }
 
+    }
+
+    private void clearEts() {
+        // Clear edittexts for next entry
+        etEditConvsFrom.setText("");
+        etEditConvsTo.setText("");
+        etEditConvsMultiBy.setText("");
+        etEditConvsOffset.setText("");
+        etEditConvsSpecial.setText("");
     }
 }
