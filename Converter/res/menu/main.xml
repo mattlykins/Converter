@@ -6,8 +6,12 @@
         android:showAsAction="never"
         android:title="@string/action_settings"/>
     <item
-        android:id="@+id/menu_add_db"
-        android:title="Add To Database">
+        android:id="@+id/menu_add_convs"
+        android:title="Add Conversions">
+    </item>
+    <item
+        android:id="@+id/menu_add_units"
+        android:title="Add Units">
     </item>
     <item
         android:id="@+id/menu_view_db"

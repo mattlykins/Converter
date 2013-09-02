@@ -1,11 +1,7 @@
 package com.mattlykins.converter;
 
-import com.mattlykins.converter.dbContract.dBase;
-
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,43 +31,18 @@ public class MainActivity extends Activity {
                 startActivity(intent);
                 break;
 
-            case R.id.menu_add_db:
-                //chooseTableDialog(CONSTANT.ADD);
+            case R.id.menu_add_units:
                 AddUnitsDialog aud = new AddUnitsDialog(this, R.layout.edit_units, "Add Units");
                 aud.show();
+                break;
+
+            case R.id.menu_add_convs:
+                AddConvsDialog acd = new AddConvsDialog(this, R.layout.edit_convs,
+                        "Add Conversions");
+                acd.show();
                 break;
         }
         return super.onOptionsItemSelected(item);
 
     }
-
-    private void choseTableUnits() {
-        chosenTable = dBase.TN_UNITS;
-    }
-
-    private void choseTableConvs() {
-        chosenTable = dBase.TN_CONVS;
-    }
-
-    private void chooseTableDialog(final String title) {
-
-        AlertDialog.Builder b = new AlertDialog.Builder(this);
-        b.setTitle(title);
-        b.setItems(dBase.TN_TABLES, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        choseTableUnits();
-                        break;
-                    case 1:
-                        choseTableConvs();
-                        break;
-
-                }
-            }
-        });
-        b.show();
-    }
-
 }

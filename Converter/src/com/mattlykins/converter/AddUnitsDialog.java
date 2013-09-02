@@ -8,7 +8,6 @@ import com.mattlykins.dblibrary.DatabaseHelper;
 import android.app.Dialog;
 import android.content.Context;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteConstraintException;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,6 +48,8 @@ public class AddUnitsDialog extends Dialog implements android.view.View.OnClickL
         bAddUnitsDelete = (Button) this.findViewById(R.id.bEditUnitsDelete);
 
         bAddUnitsDelete.setVisibility(View.INVISIBLE);
+        
+        bAddUnitsOK.setText("Add");
 
         bAddUnitsOK.setOnClickListener(this);
         bAddUnitsCancel.setOnClickListener(this);
