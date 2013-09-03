@@ -96,26 +96,17 @@ public class AddConvsDialog extends Dialog implements android.view.View.OnClickL
 
                     // test whether a conversion already exists
                     final String selection = "FROMUNIT=? AND TOUNIT=?";
+                    //Make this a Constant ^
                     Cursor c = dbHelper.Query(true, dBase.TN_CONVS, null, selection, new String[] {
                             tempEtFromSymbol, tempEtToSymbol });
 
                     LogCursor lc = new LogCursor();
-                    lc.LogConvs(c);
+                    lc.LogConvs(c,"AddConvsDialog-Existing");
 
                     c.moveToFirst();
 
-                    if (c.getString(dBase.NDEX_CONVS_FROM).equals(tempEtFromSymbol)
-                            && c.getString(dBase.NDEX_CONVS_TO).equals(tempEtToSymbol)) {
-
-                        final String message = String.format(
-                                "The conversion from %s to %s already exists in the database",
-                                tempEtFromSymbol, tempEtToSymbol);
-                        @SuppressWarnings("unused")
-                        PopUp P = new PopUp(myContext, "Duplicate Conversion", message);
-
-                    }
-                    else {
-
+                    if( c == null || c.getCount() == 0)
+                    {
                         String[] colData = new String[] { tempEtFromSymbol, tempEtToSymbol,
                                 tempEtMultiBy, tempEtOffset, tempEtSpecial };
 
@@ -134,7 +125,20 @@ public class AddConvsDialog extends Dialog implements android.view.View.OnClickL
                         t.show();
 
                         clearEts();
+                    }                    
+                    else if (c.getString(dBase.NDEX_CONVS_FROM).equals(tempEtFromSymbol)
+                            && c.getString(dBase.NDEX_CONVS_TO).equals(tempEtToSymbol)) {
 
+                        final String message = String.format(
+                                "The conversion from %s to %s already exists in the database",
+                                tempEtFromSymbol, tempEtToSymbol);
+                        @SuppressWarnings("unused")
+                        PopUp P = new PopUp(myContext, "Duplicate Conversion", message);
+
+                    }
+                    else {
+
+                        //Bad Stuff
                     }
                 }
 

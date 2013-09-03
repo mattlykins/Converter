@@ -11,10 +11,10 @@ public class LogCursor {
 
     }
 
-    public void LogConvs(Cursor cursor) {
+    public void LogConvs(Cursor cursor, String PreText) {
         cursor.moveToFirst();
         while (cursor.isAfterLast() == false) {
-            Log.d("FERRET",
+            Log.d("FERRET", PreText + ": " +
                     cursor.getString(dBase.NDEX_CONVS_FROM) + " "
                             + cursor.getString(dBase.NDEX_CONVS_TO) + " " + 
                            String.valueOf(cursor.getDouble(dBase.NDEX_CONVS_MUTLI)) +
@@ -22,7 +22,6 @@ public class LogCursor {
                            cursor.getString(dBase.NDEX_CONVS_SPECIAL) + "\n");
             cursor.moveToNext();
         }
-
     }
 
 }
