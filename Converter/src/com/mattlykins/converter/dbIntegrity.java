@@ -35,7 +35,7 @@ public class dbIntegrity {
     }
 
     public void checkIntegrity() {
-        Cursor cAll = dbHelper.getAllRows(dBase.TN_CONVS,dBase.CN_CONVS_FROM);
+        Cursor cAll = dbHelper.getAllRows(dBase.TN_CONVS, dBase.CN_CONVS_FROM);
         if (cAll == null) {
             return;
         }
@@ -91,15 +91,16 @@ public class dbIntegrity {
                     }
 
                     try {
-						dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, new String[] { currentFrom,
-						        testTo, String.valueOf(newMultiply), String.valueOf(newOffset),
-						        newSpecial });
-					} catch (SQLException sqlex) {
-						// TODO Auto-generated catch block
-						sqlex.printStackTrace();
-						PopUp p = new PopUp(myContext, "PROBLEM!!!", "Could not add conversion");
-						return;
-					}
+                        dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, new String[] { currentFrom,
+                                testTo, String.valueOf(newMultiply), String.valueOf(newOffset),
+                                newSpecial });
+                    }
+                    catch (SQLException sqlex) {
+                        // TODO Auto-generated catch block
+                        sqlex.printStackTrace();
+                        PopUp p = new PopUp(myContext, "PROBLEM!!!", "Could not add conversion");
+                        return;
+                    }
                     convsAdded++;
 
                     cFrom.moveToNext();
@@ -118,8 +119,11 @@ public class dbIntegrity {
             }
             cAll.moveToNext();
         }
-        
-        PopUp p = new PopUp(myContext, "Conversion Added", String.format("%i conversions have been added.", convsAdded));
+
+        if (convsAdded > 0) {
+            PopUp p = new PopUp(myContext, "Conversion Added", String.format(
+                    "%d conversions have been added.", convsAdded));
+        }
 
     }
 }
