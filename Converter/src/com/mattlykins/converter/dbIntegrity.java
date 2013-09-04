@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.mattlykins.converter.dbContract.dBase;
 import com.mattlykins.dblibrary.DatabaseHelper;
@@ -38,31 +39,64 @@ public class dbIntegrity {
         // return if null
         cAll.moveToFirst();
 
-        Integer currentIndex = cAll.getInt(dBase.NDEX_ID);
-        String currentFrom = cAll.getString(dBase.NDEX_CONVS_FROM);
-        String currentTo = cAll.getString(dBase.NDEX_CONVS_TO);
+        while (cAll.isAfterLast() == false) {
 
-        // Check to see if the currentTo has Froms that take it to other Tos
-        Cursor cFrom = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM + "=?",
-                new String[] { currentTo });
-        if (cFrom == null) {
-            return;
-        }       
-        
-        lc.LogConvs(cFrom, "cFrom");
-        cFrom.moveToFirst();
-        cFrom.moveToNext();
+            Integer currentIndex = cAll.getInt(dBase.NDEX_ID);
+            String currentFrom = cAll.getString(dBase.NDEX_CONVS_FROM);
+            String currentTo = cAll.getString(dBase.NDEX_CONVS_TO);
+            Double currentMultiply = cAll.getDouble(dBase.NDEX_CONVS_MUTLI);
+            Double currentOffset = cAll.getDouble(dBase.NDEX_CONVS_OFFSET);
+            String currentSpecial = cAll.getString(dBase.NDEX_CONVS_SPECIAL);
 
-        String testTo = cFrom.getString(dBase.NDEX_CONVS_TO);
+            // Check to see if the currentTo has Froms that take it to other Tos
+            Cursor cFrom = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM + "=?",
+                    new String[] { currentTo });
+            if (cFrom == null || cFrom.getCount() == 0) {
+                return;
+            }
 
-        // Check if the current From also connects to the resultant Tos.
-        Cursor cTo = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM + "=? AND "
-                + dBase.CN_CONVS_TO + "=?", new String[] { currentFrom, testTo });
-        if (cTo == null) {
-            return;
+            lc.LogConvs(cFrom, "cFrom");
+            cFrom.moveToFirst();
+
+            while (cFrom.isAfterLast() == false) {
+
+                Double fromMultiply = cFrom.getDouble(dBase.NDEX_CONVS_MUTLI);
+                Double fromOffset = cFrom.getDouble(dBase.NDEX_CONVS_OFFSET);
+                String fromSpecial = cFrom.getString(dBase.NDEX_CONVS_SPECIAL);
+                String testTo = cFrom.getString(dBase.NDEX_CONVS_TO);
+
+                // Check if the current From also connects to the resultant Tos.
+                Cursor cTo = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM
+                        + "=? AND " + dBase.CN_CONVS_TO + "=?",
+                        new String[] { currentFrom, testTo });
+
+                if (cTo == null || cTo.getCount() == 0) {
+
+                    // If the conversion is possible but not available, add it.
+                    Double newMultiply = currentMultiply * fromMultiply;
+                    Double newOffset = currentOffset + fromOffset;
+                    String newSpecial = currentSpecial + ":" + fromSpecial;
+
+                    dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, new String[] { currentFrom,
+                            testTo, String.valueOf(newMultiply), String.valueOf(newOffset),
+                            newSpecial });
+
+                    cFrom.moveToNext();
+                    continue;
+                }
+                lc.LogConvs(cTo, "cTo");
+
+                cTo.moveToFirst();
+
+                // Verify multiplicative factors
+                if (cTo.getDouble(dBase.NDEX_CONVS_MUTLI) != currentMultiply * fromMultiply) {
+                    PopUp p = new PopUp(myContext, "PROBLEM", "Bad Multi");
+                }
+
+                cFrom.moveToNext();
+            }
+            cAll.moveToNext();
         }
-        lc.LogConvs(cTo, "cTo");
 
     }
-
 }
