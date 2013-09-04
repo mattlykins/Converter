@@ -89,7 +89,7 @@ public class EditConvsDialog extends Dialog implements android.view.View.OnClick
                     sqlex.printStackTrace();
                 }
 
-                ccAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_CONVS));
+                ccAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_CONVS, dBase.CN_CONVS_FROM));
 
                 this.dismiss();
                 break;
@@ -106,7 +106,7 @@ public class EditConvsDialog extends Dialog implements android.view.View.OnClick
                     // TODO Auto-generated catch block
                     sqlex.printStackTrace();
                 }
-                ccAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_CONVS));
+                ccAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_CONVS, dBase.CN_CONVS_FROM));
                 this.dismiss();
                 break;
         }

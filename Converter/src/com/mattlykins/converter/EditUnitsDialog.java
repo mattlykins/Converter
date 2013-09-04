@@ -82,7 +82,7 @@ public class EditUnitsDialog extends Dialog implements android.view.View.OnClick
                     sqlex.printStackTrace();
                 }
                 
-                scAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_UNITS));
+                scAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_UNITS, dBase.CN_UNITS_SYMBOL));
                 this.dismiss();
                 break;
 
@@ -99,7 +99,7 @@ public class EditUnitsDialog extends Dialog implements android.view.View.OnClick
                     sqlex.printStackTrace();
                 }
                 
-                scAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_UNITS));
+                scAdapter.changeCursor(dbHelper.getAllRows(dBase.TN_UNITS, dBase.CN_UNITS_SYMBOL));
                 this.dismiss();
                 break;
         }

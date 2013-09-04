@@ -32,7 +32,7 @@ public class dbIntegrity {
     }
 
     public void checkIntegrity() {
-        Cursor cAll = dbHelper.getAllRows(dBase.TN_CONVS);
+        Cursor cAll = dbHelper.getAllRows(dBase.TN_CONVS,dBase.CN_CONVS_FROM);
         if (cAll == null) {
             return;
         }
@@ -52,7 +52,8 @@ public class dbIntegrity {
             Cursor cFrom = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM + "=?",
                     new String[] { currentTo });
             if (cFrom == null || cFrom.getCount() == 0) {
-                return;
+                cAll.moveToNext();
+                continue;
             }
 
             lc.LogConvs(cFrom, "cFrom");
@@ -75,7 +76,16 @@ public class dbIntegrity {
                     // If the conversion is possible but not available, add it.
                     Double newMultiply = currentMultiply * fromMultiply;
                     Double newOffset = currentOffset + fromOffset;
-                    String newSpecial = currentSpecial + ":" + fromSpecial;
+                    String newSpecial = "";
+                    if (currentSpecial.isEmpty() && fromSpecial.isEmpty()) {
+                        newSpecial = "";
+                    }
+                    else if (currentSpecial.equals(fromSpecial) && currentSpecial.equals("INVERSE")) {
+                        newSpecial = "";
+                    }
+                    else {
+                        newSpecial = currentSpecial + fromSpecial;
+                    }
 
                     dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, new String[] { currentFrom,
                             testTo, String.valueOf(newMultiply), String.valueOf(newOffset),

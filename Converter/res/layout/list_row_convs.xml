@@ -13,7 +13,7 @@
         android:layout_weight="1"
         android:text="@string/from"
         android:textColor="#0000FF"
-        android:textSize="25sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_weight="1"
         android:text="@string/to"
         android:textColor="#5C002E"
-        android:textSize="25sp" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/tvListMultiplyBy"
@@ -32,7 +32,7 @@
         android:layout_weight="1"
         android:text="@string/multiplyby"
         android:textColor="#5C002E"
-        android:textSize="25sp" />
+        android:textSize="18sp" />
 
     <!-- Rightend Arrow -->
 

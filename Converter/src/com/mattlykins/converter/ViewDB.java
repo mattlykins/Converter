@@ -91,7 +91,7 @@ public class ViewDB extends Activity implements OnItemClickListener {
     // }
 
     private void unitsSelected() {
-        cursor = mydbHelper.getAllRows(whichTable);
+        cursor = mydbHelper.getAllRows(whichTable, dBase.CN_UNITS_SYMBOL);
 
         scAdapter = new SimpleCursorAdapter(this, R.layout.list_row_units, cursor,
                 dBase.COLUMNS_UNITS, dBase.VIEW_IDS_UNITS,
@@ -102,7 +102,7 @@ public class ViewDB extends Activity implements OnItemClickListener {
     }
 
     private void convsSelected() {
-        cursor = mydbHelper.getAllRows(whichTable);
+        cursor = mydbHelper.getAllRows(whichTable, dBase.CN_CONVS_FROM);
         ccAdapter = new CustomCursorAdapter(this, R.layout.list_row_convs, cursor);
         list.setAdapter(ccAdapter);
         list.setOnItemClickListener(this);
