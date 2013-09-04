@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.util.Log;
 
 import com.mattlykins.converter.dbContract.dBase;
@@ -14,10 +15,12 @@ public class dbIntegrity {
     DatabaseHelper dbHelper;
     Context myContext;
     LogCursor lc;
+    Integer convsAdded;
 
     public dbIntegrity(Context context) {
         myContext = context;
         lc = new LogCursor();
+        convsAdded = 0;
 
         dbHelper = new DatabaseHelper(context);
         try {
@@ -87,9 +90,17 @@ public class dbIntegrity {
                         newSpecial = currentSpecial + fromSpecial;
                     }
 
-                    dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, new String[] { currentFrom,
-                            testTo, String.valueOf(newMultiply), String.valueOf(newOffset),
-                            newSpecial });
+                    try {
+						dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, new String[] { currentFrom,
+						        testTo, String.valueOf(newMultiply), String.valueOf(newOffset),
+						        newSpecial });
+					} catch (SQLException sqlex) {
+						// TODO Auto-generated catch block
+						sqlex.printStackTrace();
+						PopUp p = new PopUp(myContext, "PROBLEM!!!", "Could not add conversion");
+						return;
+					}
+                    convsAdded++;
 
                     cFrom.moveToNext();
                     continue;
@@ -107,6 +118,8 @@ public class dbIntegrity {
             }
             cAll.moveToNext();
         }
+        
+        PopUp p = new PopUp(myContext, "Conversion Added", String.format("%i conversions have been added.", convsAdded));
 
     }
 }
