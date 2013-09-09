@@ -5,7 +5,6 @@ import java.io.IOException;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.util.Log;
 
 import com.mattlykins.converter.dbContract.dBase;
 import com.mattlykins.dblibrary.DatabaseHelper;
@@ -42,7 +41,7 @@ public class dbIntegrity {
         // return if null
         cAll.moveToFirst();
 
-        while (cAll.isAfterLast() == false) {
+        while (cAll.moveToNext()) {
 
             Integer currentIndex = cAll.getInt(dBase.NDEX_ID);
             String currentFrom = cAll.getString(dBase.NDEX_CONVS_FROM);
@@ -62,12 +61,17 @@ public class dbIntegrity {
             lc.LogConvs(cFrom, "cFrom");
             cFrom.moveToFirst();
 
-            while (cFrom.isAfterLast() == false) {
+            while (cFrom.moveToNext()) {
 
                 Double fromMultiply = cFrom.getDouble(dBase.NDEX_CONVS_MUTLI);
                 Double fromOffset = cFrom.getDouble(dBase.NDEX_CONVS_OFFSET);
                 String fromSpecial = cFrom.getString(dBase.NDEX_CONVS_SPECIAL);
                 String testTo = cFrom.getString(dBase.NDEX_CONVS_TO);
+                
+                if( currentFrom.equals(testTo))
+                {
+                    continue;
+                }
 
                 // Check if the current From also connects to the resultant Tos.
                 Cursor cTo = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM
@@ -102,8 +106,7 @@ public class dbIntegrity {
                         return;
                     }
                     convsAdded++;
-
-                    cFrom.moveToNext();
+                    
                     continue;
                 }
                 lc.LogConvs(cTo, "cTo");
@@ -114,15 +117,50 @@ public class dbIntegrity {
                 if (cTo.getDouble(dBase.NDEX_CONVS_MUTLI) != currentMultiply * fromMultiply) {
                     PopUp p = new PopUp(myContext, "PROBLEM", "Bad Multi");
                 }
-
-                cFrom.moveToNext();
             }
-            cAll.moveToNext();
         }
 
         if (convsAdded > 0) {
             PopUp p = new PopUp(myContext, "Conversion Added", String.format(
                     "%d conversions have been added.", convsAdded));
+        }
+
+    }
+
+    public void createInverses() {
+        Cursor cAll = dbHelper.getAllRows(dBase.TN_CONVS, dBase.CN_CONVS_FROM);
+        if (cAll == null) {
+            return;
+        }
+        // return if null
+        cAll.moveToFirst();
+
+        while (cAll.moveToNext()) {
+
+            final Integer currentIndex = cAll.getInt(dBase.NDEX_ID);
+            final String currentFrom = cAll.getString(dBase.NDEX_CONVS_FROM);
+            final String currentTo = cAll.getString(dBase.NDEX_CONVS_TO);
+            final Double currentMultiply = cAll.getDouble(dBase.NDEX_CONVS_MUTLI);
+            final Double currentOffset = cAll.getDouble(dBase.NDEX_CONVS_OFFSET);
+            final String currentSpecial = cAll.getString(dBase.NDEX_CONVS_SPECIAL);
+
+            // Check to see if inverse exists
+            Cursor cInverse = dbHelper
+                    .Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM + "=? AND "
+                            + dBase.CN_CONVS_TO + "=?", new String[] { currentTo, currentFrom });
+
+            if (cInverse == null || cInverse.getCount() == 0) {
+                // Create inverse conversions. For now special only has INVERSE
+                // (cm to cm-1) which is still correct
+                final Double invMultiply = 1 / currentMultiply;
+                final Double invOffset = -1 * currentOffset;
+                final String invFrom = currentTo;
+                final String invTo = currentFrom;
+                final String invSpecial = currentSpecial;
+
+                dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, new String[] { invFrom, invTo,
+                        String.valueOf(invMultiply), String.valueOf(invOffset), invSpecial });
+            }
         }
 
     }

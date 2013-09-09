@@ -16,6 +16,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         
         dbIntegrity db = new dbIntegrity(this);
+        db.createInverses();
         db.checkIntegrity();
     }
 
