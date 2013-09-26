@@ -51,52 +51,53 @@ public class dbIntegrity {
             String currentSpecial = cAll.getString(dBase.NDEX_CONVS_SPECIAL);
 
             // Check to see if the currentTo has Froms that take it to other Tos
-            Cursor cFrom = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM + "=?",
+            Cursor cSecond = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM + "=?",
                     new String[] { currentTo });
-            if (cFrom == null || cFrom.getCount() == 0) {
+            if (cSecond == null || cSecond.getCount() == 0) {
                 cAll.moveToNext();
                 continue;
             }
 
-            lc.LogConvs(cFrom, "cFrom");
-            cFrom.moveToFirst();
+            lc.LogConvs(cSecond, "cSecond");
+            cSecond.moveToFirst();
 
-            while (cFrom.moveToNext()) {
+            while (cSecond.moveToNext()) {
 
-                Double fromMultiply = cFrom.getDouble(dBase.NDEX_CONVS_MUTLI);
-                Double fromOffset = cFrom.getDouble(dBase.NDEX_CONVS_OFFSET);
-                String fromSpecial = cFrom.getString(dBase.NDEX_CONVS_SPECIAL);
-                String testTo = cFrom.getString(dBase.NDEX_CONVS_TO);
-                
-                if( currentFrom.equals(testTo))
-                {
+                Double secondMultiply = cSecond.getDouble(dBase.NDEX_CONVS_MUTLI);
+                Double secondOffset = cSecond.getDouble(dBase.NDEX_CONVS_OFFSET);
+                String secondSpecial = cSecond.getString(dBase.NDEX_CONVS_SPECIAL);
+                String secondTo = cSecond.getString(dBase.NDEX_CONVS_TO);
+
+                if (currentFrom.equals(secondTo)) {
                     continue;
                 }
 
-                // Check if the current From also connects to the resultant Tos.
-                Cursor cTo = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM
-                        + "=? AND " + dBase.CN_CONVS_TO + "=?",
-                        new String[] { currentFrom, testTo });
+                // Check if the current From already connects to the second
+                // level Tos.
+                Cursor cExists = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM
+                        + "=? AND " + dBase.CN_CONVS_TO + "=?", new String[] { currentFrom,
+                        secondTo });
 
-                if (cTo == null || cTo.getCount() == 0) {
+                if (cExists == null || cExists.getCount() == 0) {
 
-                    // If the conversion is possible but not available, add it.
-                    Double newMultiply = currentMultiply * fromMultiply;
-                    Double newOffset = currentOffset + fromOffset;
+                    // If the conversion is possible but does not exist, add it.
+                    Double newMultiply = currentMultiply * secondMultiply;
+                    Double newOffset = currentOffset + secondOffset;
                     String newSpecial = "";
-                    if (currentSpecial.isEmpty() && fromSpecial.isEmpty()) {
+                    if (currentSpecial.isEmpty() && secondSpecial.isEmpty()) {
                         newSpecial = "";
                     }
-                    else if (currentSpecial.equals(fromSpecial) && currentSpecial.equals("INVERSE")) {
-                        newSpecial = "";
+                    else if (currentSpecial.equals(secondSpecial)
+                            && currentSpecial.equals("INVERSE")) {
+                        newSpecial = currentSpecial;
                     }
                     else {
-                        newSpecial = currentSpecial + fromSpecial;
+                        newSpecial = currentSpecial + ";" + secondSpecial;
                     }
 
                     try {
                         dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, new String[] { currentFrom,
-                                testTo, String.valueOf(newMultiply), String.valueOf(newOffset),
+                                secondTo, String.valueOf(newMultiply), String.valueOf(newOffset),
                                 newSpecial });
                     }
                     catch (SQLException sqlex) {
@@ -107,24 +108,31 @@ public class dbIntegrity {
                     }
                     convsAdded++;
                     
-                    continue;
+                    cExists.close();
                 }
-                lc.LogConvs(cTo, "cTo");
+                else {
+                    lc.LogConvs(cExists, "cExists");
+                    cExists.moveToFirst();
+                    cExists.close();
+                }                
 
-                cTo.moveToFirst();
-
-                // Verify multiplicative factors
-                if (cTo.getDouble(dBase.NDEX_CONVS_MUTLI) != currentMultiply * fromMultiply) {
-                    PopUp p = new PopUp(myContext, "PROBLEM", "Bad Multi");
-                }
+//                // Verify multiplicative factors
+//                if (cExists.getDouble(dBase.NDEX_CONVS_MUTLI) / (currentMultiply * secondMultiply) > 0.01) {
+//                    PopUp p = new PopUp(myContext, "PROBLEM", String.format(
+//                            "Bad Multi:%E\n%s To %s:%E\n%s to %s:%E",
+//                            cExists.getDouble(dBase.NDEX_CONVS_MUTLI), currentFrom, currentTo,
+//                            currentMultiply, cSecond.getString(dBase.NDEX_CONVS_FROM),
+//                            cSecond.getString(dBase.NDEX_CONVS_TO), secondMultiply));
+//                }
             }
+            cSecond.close();
         }
 
         if (convsAdded > 0) {
-            PopUp p = new PopUp(myContext, "Conversion Added", String.format(
+            PopUp p = new PopUp(myContext, "Conversions Added", String.format(
                     "%d conversions have been added.", convsAdded));
         }
-
+        cAll.close();
     }
 
     public void createInverses() {
@@ -161,7 +169,9 @@ public class dbIntegrity {
                 dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, new String[] { invFrom, invTo,
                         String.valueOf(invMultiply), String.valueOf(invOffset), invSpecial });
             }
+            
+            cInverse.close();            
         }
-
+        cAll.close();
     }
 }

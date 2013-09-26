@@ -17,7 +17,7 @@ public class LogCursor {
             Log.d("FERRET", PreText + ": " +
                     cursor.getString(dBase.NDEX_CONVS_FROM) + " "
                             + cursor.getString(dBase.NDEX_CONVS_TO) + " " + 
-                           String.valueOf(cursor.getDouble(dBase.NDEX_CONVS_MUTLI)) +
+                           String.valueOf(cursor.getDouble(dBase.NDEX_CONVS_MUTLI)) + " " +
                            cursor.getString(dBase.NDEX_CONVS_OFFSET) + " " +
                            cursor.getString(dBase.NDEX_CONVS_SPECIAL) + "\n");
             cursor.moveToNext();
