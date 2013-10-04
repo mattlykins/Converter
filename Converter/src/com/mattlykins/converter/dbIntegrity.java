@@ -107,23 +107,25 @@ public class dbIntegrity {
                         return;
                     }
                     convsAdded++;
-                    
+
                     cExists.close();
                 }
                 else {
                     lc.LogConvs(cExists, "cExists");
                     cExists.moveToFirst();
                     cExists.close();
-                }                
+                }
 
-//                // Verify multiplicative factors
-//                if (cExists.getDouble(dBase.NDEX_CONVS_MUTLI) / (currentMultiply * secondMultiply) > 0.01) {
-//                    PopUp p = new PopUp(myContext, "PROBLEM", String.format(
-//                            "Bad Multi:%E\n%s To %s:%E\n%s to %s:%E",
-//                            cExists.getDouble(dBase.NDEX_CONVS_MUTLI), currentFrom, currentTo,
-//                            currentMultiply, cSecond.getString(dBase.NDEX_CONVS_FROM),
-//                            cSecond.getString(dBase.NDEX_CONVS_TO), secondMultiply));
-//                }
+                // // Verify multiplicative factors
+                // if (cExists.getDouble(dBase.NDEX_CONVS_MUTLI) /
+                // (currentMultiply * secondMultiply) > 0.01) {
+                // PopUp p = new PopUp(myContext, "PROBLEM", String.format(
+                // "Bad Multi:%E\n%s To %s:%E\n%s to %s:%E",
+                // cExists.getDouble(dBase.NDEX_CONVS_MUTLI), currentFrom,
+                // currentTo,
+                // currentMultiply, cSecond.getString(dBase.NDEX_CONVS_FROM),
+                // cSecond.getString(dBase.NDEX_CONVS_TO), secondMultiply));
+                // }
             }
             cSecond.close();
         }
@@ -169,9 +171,66 @@ public class dbIntegrity {
                 dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, new String[] { invFrom, invTo,
                         String.valueOf(invMultiply), String.valueOf(invOffset), invSpecial });
             }
-            
-            cInverse.close();            
+
+            cInverse.close();
         }
         cAll.close();
+    }
+
+    public boolean verifyMultiFactors() {
+
+        Cursor cAll = dbHelper.getAllRows(dBase.TN_CONVS, dBase.CN_CONVS_FROM);
+        if (cAll == null) {
+            return false;
+        }
+        // return if null
+        cAll.moveToFirst();
+
+        while (cAll.moveToNext()) {
+
+            
+            Convs currentConv = getConvs(cAll);
+            
+         // Check to see if the currentTo has Froms that take it to other Tos
+            Cursor cSecond = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM + "=?",
+                    new String[] { currentConv.getTo() });
+            if (cSecond == null || cSecond.getCount() == 0) {
+                cAll.moveToNext();
+                continue;
+            }
+
+            lc.LogConvs(cSecond, "cSecond");
+            cSecond.moveToFirst();
+
+            while (cSecond.moveToNext()) {
+
+                Convs secondConv = getConvs(cSecond);
+                
+                
+                if (currentConv.getFrom().equals(secondConv.getTo())) {
+                    continue;
+                }
+
+                // Check if the current From already connects to the second
+                // level Tos.
+                Cursor cExists = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM
+                        + "=? AND " + dBase.CN_CONVS_TO + "=?", new String[] { currentConv.getFrom(),
+                        secondConv.getTo() });
+
+        }
+        return false;
+    }
+
+    public Convs getConvs(Cursor c) {
+        Integer cIndex = c.getInt(dBase.NDEX_ID);
+        String cFrom = c.getString(dBase.NDEX_CONVS_FROM);
+        String cTo = c.getString(dBase.NDEX_CONVS_TO);
+        Double cMultiply = c.getDouble(dBase.NDEX_CONVS_MUTLI);
+        Double cOffset = c.getDouble(dBase.NDEX_CONVS_OFFSET);
+        String cSpecial = c.getString(dBase.NDEX_CONVS_SPECIAL);
+
+        Convs cConv = new Convs(cIndex, cFrom, cTo, cMultiply, cOffset, cSpecial);
+
+        return cConv;
     }
 }
