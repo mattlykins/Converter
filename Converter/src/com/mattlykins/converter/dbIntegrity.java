@@ -43,16 +43,11 @@ public class dbIntegrity {
 
         while (cAll.moveToNext()) {
 
-            Integer currentIndex = cAll.getInt(dBase.NDEX_ID);
-            String currentFrom = cAll.getString(dBase.NDEX_CONVS_FROM);
-            String currentTo = cAll.getString(dBase.NDEX_CONVS_TO);
-            Double currentMultiply = cAll.getDouble(dBase.NDEX_CONVS_MUTLI);
-            Double currentOffset = cAll.getDouble(dBase.NDEX_CONVS_OFFSET);
-            String currentSpecial = cAll.getString(dBase.NDEX_CONVS_SPECIAL);
+            Convs currentConv = getConvs(cAll);          
 
             // Check to see if the currentTo has Froms that take it to other Tos
             Cursor cSecond = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM + "=?",
-                    new String[] { currentTo });
+                    new String[] { currentConv.getTo() });
             if (cSecond == null || cSecond.getCount() == 0) {
                 cAll.moveToNext();
                 continue;
@@ -63,41 +58,38 @@ public class dbIntegrity {
 
             while (cSecond.moveToNext()) {
 
-                Double secondMultiply = cSecond.getDouble(dBase.NDEX_CONVS_MUTLI);
-                Double secondOffset = cSecond.getDouble(dBase.NDEX_CONVS_OFFSET);
-                String secondSpecial = cSecond.getString(dBase.NDEX_CONVS_SPECIAL);
-                String secondTo = cSecond.getString(dBase.NDEX_CONVS_TO);
+                Convs secondConv = getConvs(cSecond); 
 
-                if (currentFrom.equals(secondTo)) {
+                if (currentConv.getFrom().equals(secondConv.getTo())) {
                     continue;
                 }
 
                 // Check if the current From already connects to the second
                 // level Tos.
                 Cursor cExists = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM
-                        + "=? AND " + dBase.CN_CONVS_TO + "=?", new String[] { currentFrom,
-                        secondTo });
+                        + "=? AND " + dBase.CN_CONVS_TO + "=?", new String[] { currentConv.getFrom(),
+                        secondConv.getTo() });
 
                 if (cExists == null || cExists.getCount() == 0) {
 
                     // If the conversion is possible but does not exist, add it.
-                    Double newMultiply = currentMultiply * secondMultiply;
-                    Double newOffset = currentOffset + secondOffset;
+                    Double newMultiply = currentConv.getMulti() * secondConv.getMulti();
+                    Double newOffset = currentConv.getOffset() + secondConv.getOffset();
                     String newSpecial = "";
-                    if (currentSpecial.isEmpty() && secondSpecial.isEmpty()) {
+                    if (currentConv.getSpecial().isEmpty() && secondConv.getSpecial().isEmpty()) {
                         newSpecial = "";
                     }
-                    else if (currentSpecial.equals(secondSpecial)
-                            && currentSpecial.equals("INVERSE")) {
-                        newSpecial = currentSpecial;
+                    else if (currentConv.getSpecial().equals(secondConv.getSpecial())
+                            && currentConv.getSpecial().equals("INVERSE")) {
+                        newSpecial = currentConv.getSpecial();
                     }
                     else {
-                        newSpecial = currentSpecial + ";" + secondSpecial;
+                        newSpecial = currentConv.getSpecial() + ";" + secondConv.getSpecial();
                     }
 
                     try {
-                        dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, new String[] { currentFrom,
-                                secondTo, String.valueOf(newMultiply), String.valueOf(newOffset),
+                        dbHelper.Insert(dBase.TN_CONVS, dBase.CN_CONVS, new String[] { currentConv.getFrom(),
+                                secondConv.getTo(), String.valueOf(newMultiply), String.valueOf(newOffset),
                                 newSpecial });
                     }
                     catch (SQLException sqlex) {
@@ -136,6 +128,7 @@ public class dbIntegrity {
         }
         cAll.close();
     }
+    
 
     public void createInverses() {
         Cursor cAll = dbHelper.getAllRows(dBase.TN_CONVS, dBase.CN_CONVS_FROM);
@@ -176,51 +169,7 @@ public class dbIntegrity {
         }
         cAll.close();
     }
-
-    public boolean verifyMultiFactors() {
-
-        Cursor cAll = dbHelper.getAllRows(dBase.TN_CONVS, dBase.CN_CONVS_FROM);
-        if (cAll == null) {
-            return false;
-        }
-        // return if null
-        cAll.moveToFirst();
-
-        while (cAll.moveToNext()) {
-
-            
-            Convs currentConv = getConvs(cAll);
-            
-         // Check to see if the currentTo has Froms that take it to other Tos
-            Cursor cSecond = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM + "=?",
-                    new String[] { currentConv.getTo() });
-            if (cSecond == null || cSecond.getCount() == 0) {
-                cAll.moveToNext();
-                continue;
-            }
-
-            lc.LogConvs(cSecond, "cSecond");
-            cSecond.moveToFirst();
-
-            while (cSecond.moveToNext()) {
-
-                Convs secondConv = getConvs(cSecond);
-                
-                
-                if (currentConv.getFrom().equals(secondConv.getTo())) {
-                    continue;
-                }
-
-                // Check if the current From already connects to the second
-                // level Tos.
-                Cursor cExists = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM
-                        + "=? AND " + dBase.CN_CONVS_TO + "=?", new String[] { currentConv.getFrom(),
-                        secondConv.getTo() });
-
-        }
-        return false;
-    }
-
+    
     public Convs getConvs(Cursor c) {
         Integer cIndex = c.getInt(dBase.NDEX_ID);
         String cFrom = c.getString(dBase.NDEX_CONVS_FROM);
