@@ -15,6 +15,16 @@ public class Convs
         setMulti(multi);
         setOffset(offset);
     }
+    
+    public Convs() {
+        super();
+        this.setId(null);
+        setFrom(null);
+        setTo(null);
+        setSpecial(null);
+        setMulti(null);
+        setOffset(null);
+    }
 
     public Integer getId() {
         return id;
