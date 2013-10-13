@@ -245,6 +245,7 @@ public class dbIntegrity {
                             .getMulti())) > 0.01) {
                         
                         //Fix it!
+                        Log.d("FERRET","MULTI DOESN'T MATCH");
 
                     }
 
@@ -269,9 +270,7 @@ public class dbIntegrity {
             PopUp p = new PopUp(myContext, "PROBLEM!!!", "Could not add conversion");
             return -1;
         }
-
         return 0;
-
     }
 
 }
