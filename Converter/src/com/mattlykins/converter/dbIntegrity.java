@@ -34,6 +34,108 @@ public class dbIntegrity {
 
     }
 
+    // public void checkIntegrity() {
+    // Cursor cAll = dbHelper.getAllRows(dBase.TN_CONVS, dBase.CN_CONVS_FROM);
+    // if (cAll == null) {
+    // return;
+    // }
+    // // return if null
+    // cAll.moveToFirst();
+    //
+    // while (cAll.moveToNext()) {
+    //
+    // Convs currentConv = getConvs(cAll);
+    //
+    // // Check to see if the currentTo has Froms that take it to other Tos
+    // Cursor cSecond = dbHelper.Query(true, dBase.TN_CONVS, null,
+    // dBase.CN_CONVS_FROM + "=?",
+    // new String[] { currentConv.getTo() });
+    // if (cSecond == null || cSecond.getCount() == 0) {
+    // cAll.moveToNext();
+    // continue;
+    // }
+    //
+    // lc.LogConvs(cSecond, "cSecond");
+    // cSecond.moveToFirst();
+    //
+    // while (cSecond.moveToNext()) {
+    //
+    // Convs secondConv = getConvs(cSecond);
+    //
+    // if (currentConv.getFrom().equals(secondConv.getTo())) {
+    // continue;
+    // }
+    //
+    // // Check if the current From already connects to the second
+    // // level Tos.
+    // Cursor cExists = dbHelper.Query(true, dBase.TN_CONVS, null,
+    // dBase.CN_CONVS_FROM
+    // + "=? AND " + dBase.CN_CONVS_TO + "=?",
+    // new String[] { currentConv.getFrom(), secondConv.getTo() });
+    //
+    // if (cExists == null || cExists.getCount() == 0) {
+    //
+    // // If the conversion is possible but does not exist, add it.
+    // Double newMultiply = currentConv.getMulti() * secondConv.getMulti();
+    // Double newOffset = currentConv.getOffset() + secondConv.getOffset();
+    // String newSpecial = "";
+    // if (currentConv.getSpecial().isEmpty() &&
+    // secondConv.getSpecial().isEmpty()) {
+    // newSpecial = "";
+    // }
+    // else if (currentConv.getSpecial().equals(secondConv.getSpecial())
+    // && currentConv.getSpecial().equals("INVERSE")) {
+    // newSpecial = currentConv.getSpecial();
+    // }
+    // else {
+    // newSpecial = currentConv.getSpecial() + ";" + secondConv.getSpecial();
+    // }
+    //
+    // try {
+    // dbHelper.Insert(
+    // dBase.TN_CONVS,
+    // dBase.CN_CONVS,
+    // new String[] { currentConv.getFrom(), secondConv.getTo(),
+    // String.valueOf(newMultiply), String.valueOf(newOffset),
+    // newSpecial });
+    // }
+    // catch (SQLException sqlex) {
+    // // TODO Auto-generated catch block
+    // sqlex.printStackTrace();
+    // PopUp p = new PopUp(myContext, "PROBLEM!!!", "Could not add conversion");
+    // return;
+    // }
+    // convsAdded++;
+    //
+    // cExists.close();
+    // }
+    // else {
+    // lc.LogConvs(cExists, "cExists");
+    // cExists.moveToFirst();
+    // cExists.close();
+    // }
+    //
+    // // // Verify multiplicative factors
+    // // if (cExists.getDouble(dBase.NDEX_CONVS_MUTLI) /
+    // // (currentMultiply * secondMultiply) > 0.01) {
+    // // PopUp p = new PopUp(myContext, "PROBLEM", String.format(
+    // // "Bad Multi:%E\n%s To %s:%E\n%s to %s:%E",
+    // // cExists.getDouble(dBase.NDEX_CONVS_MUTLI), currentFrom,
+    // // currentTo,
+    // // currentMultiply, cSecond.getString(dBase.NDEX_CONVS_FROM),
+    // // cSecond.getString(dBase.NDEX_CONVS_TO), secondMultiply));
+    // // }
+    // }
+    // cSecond.close();
+    // }
+    //
+    // if (convsAdded > 0) {
+    // PopUp p = new PopUp(myContext, "Conversions Added", String.format(
+    // "%d conversions have been added.", convsAdded));
+    // }
+    // cAll.close();
+    // }
+
     public void checkIntegrity() {
         Cursor cAll = dbHelper.getAllRows(dBase.TN_CONVS, dBase.CN_CONVS_FROM);
         if (cAll == null) {
@@ -43,94 +145,9 @@ public class dbIntegrity {
         cAll.moveToFirst();
 
         while (cAll.moveToNext()) {
-
             Convs currentConv = getConvs(cAll);
-
-            // Check to see if the currentTo has Froms that take it to other Tos
-            Cursor cSecond = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM + "=?",
-                    new String[] { currentConv.getTo() });
-            if (cSecond == null || cSecond.getCount() == 0) {
-                cAll.moveToNext();
-                continue;
-            }
-
-            lc.LogConvs(cSecond, "cSecond");
-            cSecond.moveToFirst();
-
-            while (cSecond.moveToNext()) {
-
-                Convs secondConv = getConvs(cSecond);
-
-                if (currentConv.getFrom().equals(secondConv.getTo())) {
-                    continue;
-                }
-
-                // Check if the current From already connects to the second
-                // level Tos.
-                Cursor cExists = dbHelper.Query(true, dBase.TN_CONVS, null, dBase.CN_CONVS_FROM
-                        + "=? AND " + dBase.CN_CONVS_TO + "=?",
-                        new String[] { currentConv.getFrom(), secondConv.getTo() });
-
-                if (cExists == null || cExists.getCount() == 0) {
-
-                    // If the conversion is possible but does not exist, add it.
-                    Double newMultiply = currentConv.getMulti() * secondConv.getMulti();
-                    Double newOffset = currentConv.getOffset() + secondConv.getOffset();
-                    String newSpecial = "";
-                    if (currentConv.getSpecial().isEmpty() && secondConv.getSpecial().isEmpty()) {
-                        newSpecial = "";
-                    }
-                    else if (currentConv.getSpecial().equals(secondConv.getSpecial())
-                            && currentConv.getSpecial().equals("INVERSE")) {
-                        newSpecial = currentConv.getSpecial();
-                    }
-                    else {
-                        newSpecial = currentConv.getSpecial() + ";" + secondConv.getSpecial();
-                    }
-
-                    try {
-                        dbHelper.Insert(
-                                dBase.TN_CONVS,
-                                dBase.CN_CONVS,
-                                new String[] { currentConv.getFrom(), secondConv.getTo(),
-                                        String.valueOf(newMultiply), String.valueOf(newOffset),
-                                        newSpecial });
-                    }
-                    catch (SQLException sqlex) {
-                        // TODO Auto-generated catch block
-                        sqlex.printStackTrace();
-                        PopUp p = new PopUp(myContext, "PROBLEM!!!", "Could not add conversion");
-                        return;
-                    }
-                    convsAdded++;
-
-                    cExists.close();
-                }
-                else {
-                    lc.LogConvs(cExists, "cExists");
-                    cExists.moveToFirst();
-                    cExists.close();
-                }
-
-                // // Verify multiplicative factors
-                // if (cExists.getDouble(dBase.NDEX_CONVS_MUTLI) /
-                // (currentMultiply * secondMultiply) > 0.01) {
-                // PopUp p = new PopUp(myContext, "PROBLEM", String.format(
-                // "Bad Multi:%E\n%s To %s:%E\n%s to %s:%E",
-                // cExists.getDouble(dBase.NDEX_CONVS_MUTLI), currentFrom,
-                // currentTo,
-                // currentMultiply, cSecond.getString(dBase.NDEX_CONVS_FROM),
-                // cSecond.getString(dBase.NDEX_CONVS_TO), secondMultiply));
-                // }
-            }
-            cSecond.close();
+            extendConvs(currentConv);
         }
-
-        if (convsAdded > 0) {
-            PopUp p = new PopUp(myContext, "Conversions Added", String.format(
-                    "%d conversions have been added.", convsAdded));
-        }
-        cAll.close();
     }
 
     public void createInverses() {
@@ -243,15 +260,15 @@ public class dbIntegrity {
                     }
                     else if (Math.abs(1 - (conv.getMulti() * secondConv.getMulti() / existConv
                             .getMulti())) > 0.01) {
-                        
-                        //Fix it!
-                        Log.d("FERRET","MULTI DOESN'T MATCH");
+
+                        // Fix it!
+                        Log.d("FERRET", "MULTI DOESN'T MATCH");
 
                     }
 
                 }
-                else{
-                    //WTF!
+                else {
+                    // WTF!
                 }
             }
         }
@@ -272,5 +289,4 @@ public class dbIntegrity {
         }
         return 0;
     }
-
 }
