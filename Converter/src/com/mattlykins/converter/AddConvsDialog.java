@@ -52,7 +52,7 @@ public class AddConvsDialog extends Dialog implements android.view.View.OnClickL
         bAddConvsCancel = (Button) this.findViewById(R.id.bEditConvsCancel);
         bAddConvsDelete = (Button) this.findViewById(R.id.bEditConvsDelete);
 
-        //bAddConvsDelete.setVisibility(View.INVISIBLE);
+        // bAddConvsDelete.setVisibility(View.INVISIBLE);
 
         bAddConvsOK.setText("Add");
         bAddConvsDelete.setText("Clear");
@@ -96,17 +96,16 @@ public class AddConvsDialog extends Dialog implements android.view.View.OnClickL
 
                     // test whether a conversion already exists
                     final String selection = "FROMUNIT=? AND TOUNIT=?";
-                    //Make this a Constant ^
+                    // Make this a Constant ^
                     Cursor c = dbHelper.Query(true, dBase.TN_CONVS, null, selection, new String[] {
                             tempEtFromSymbol, tempEtToSymbol });
 
                     LogCursor lc = new LogCursor();
-                    lc.LogConvs(c,"AddConvsDialog-Existing");
+                    lc.LogConvs(c, "AddConvsDialog-Existing");
 
                     c.moveToFirst();
 
-                    if( c == null || c.getCount() == 0)
-                    {
+                    if (c == null || c.getCount() == 0) {
                         String[] colData = new String[] { tempEtFromSymbol, tempEtToSymbol,
                                 tempEtMultiBy, tempEtOffset, tempEtSpecial };
 
@@ -124,8 +123,16 @@ public class AddConvsDialog extends Dialog implements android.view.View.OnClickL
                                 Toast.LENGTH_SHORT);
                         t.show();
 
+                        Convs newConv = new Convs(null, tempEtFromSymbol, tempEtToSymbol,
+                                Double.valueOf(tempEtMultiBy), null,
+                                tempEtSpecial);
+
+                        dbIntegrity db = new dbIntegrity(myContext);
+                        db.createInverses();
+                        db.extendConvs(newConv);
+
                         clearEts();
-                    }                    
+                    }
                     else if (c.getString(dBase.NDEX_CONVS_FROM).equals(tempEtFromSymbol)
                             && c.getString(dBase.NDEX_CONVS_TO).equals(tempEtToSymbol)) {
 
@@ -138,7 +145,7 @@ public class AddConvsDialog extends Dialog implements android.view.View.OnClickL
                     }
                     else {
 
-                        //Bad Stuff
+                        // Bad Stuff
                     }
                 }
 
@@ -148,7 +155,7 @@ public class AddConvsDialog extends Dialog implements android.view.View.OnClickL
             case R.id.bEditConvsCancel:
                 this.dismiss();
                 break;
-                
+
             case R.id.bEditConvsDelete:
                 clearEts();
                 break;

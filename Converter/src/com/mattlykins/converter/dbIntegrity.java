@@ -246,6 +246,11 @@ public class dbIntegrity {
                     // Move to first and only
                     cExists.moveToFirst();
                     Convs existConv = getConvs(cExists);
+                    
+                    double oldFactor = existConv.getMulti();
+                    double newFactor = conv.getMulti() * secondConv.getMulti();
+                    
+                    double epsilon = 0.01;
 
                     // If the conversion already exists, check that the values
                     // are correct
@@ -258,11 +263,15 @@ public class dbIntegrity {
 
                         // Bad news !
                     }
-                    else if (Math.abs(1 - (conv.getMulti() * secondConv.getMulti() / existConv
-                            .getMulti())) > 0.01) {
+                    else if (Math.abs((oldFactor - newFactor)/oldFactor) > epsilon) {
 
                         // Fix it!
-                        Log.d("FERRET", "MULTI DOESN'T MATCH");
+                        Log.d("FERRET",
+                                "MULTI DOESN'T MATCH::" + conv.getFrom() + ":" + conv.getMulti()
+                                        + " and " + secondConv.getTo() + ":"
+                                        + secondConv.getMulti() + " does not match:" + existConv.getMulti() + "\n");
+                        
+                        PopUp p = new PopUp(myContext,"PROBLEM","MULTI DOESN'T MATCH");
 
                     }
 
